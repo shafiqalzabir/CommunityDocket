@@ -41,6 +41,17 @@
       name="twitter:image"
       content="https://yourdomain.com/static/og-image.png"
     />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-J93FJQGCCM"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-J93FJQGCCM');
+    </script>
+    
     <!-- Structured Data for Google -->
     <script type="application/ld+json">
       {
@@ -147,3 +158,4 @@
     {% block content %}{% endblock %}
   </body>
 </html>
+
