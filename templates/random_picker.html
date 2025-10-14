@@ -1,0 +1,341 @@
+{% extends "base.html" %} {% block title %}YouTube Random Comment Picker{%
+endblock %} {% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    background: linear-gradient(120deg, #f7f8fa 0%, #e3eafc 100%);
+  }
+  .container {
+    max-width: 480px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px 0 #2a4d8f18;
+    padding: 36px 18px 28px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  h1 {
+    text-align: center;
+    color: #2a4d8f;
+    font-size: 1.45em;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .desc {
+    text-align: center;
+    color: #444;
+    font-size: 1.08em;
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 22px;
+    background: #f6f8fc;
+    border-radius: 12px;
+    padding: 18px 12px 12px 12px;
+    box-shadow: 0 1px 8px #2a4d8f11;
+  }
+  label {
+    font-weight: 600;
+    color: #2a4d8f;
+    margin-bottom: 2px;
+    font-size: 1em;
+  }
+  input[type="text"],
+  input[type="number"] {
+    padding: 12px 14px;
+    border: 2px solid #bfc7d1;
+    border-radius: 12px;
+    font-size: 1.08em;
+    background: #f9fafb;
+    transition: border 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 4px;
+  }
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    border: 2px solid #2a4d8f;
+    box-shadow: 0 0 0 2px #2a4d8f22;
+    outline: none;
+  }
+  button[type="submit"] {
+    background: linear-gradient(90deg, #2a4d8f 60%, #4f8cff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 0;
+    font-size: 1.13em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px #2a4d8f22;
+    transition: background 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+  }
+  button[type="submit"]:hover {
+    background: linear-gradient(90deg, #18305c 60%, #2a4d8f 100%);
+    box-shadow: 0 4px 16px #2a4d8f33;
+  }
+  #loadingSpinner {
+    display: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+  }
+  .winner-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .winner-card {
+    background: linear-gradient(90deg, #e3f7e7 60%, #f6f8fc 100%);
+    border: 2px solid #7ed957;
+    border-radius: 14px;
+    margin-bottom: 0.7em;
+    padding: 1.1em 1.3em 1em 1.3em;
+    box-shadow: 0 2px 12px #7ed95733;
+    width: 98%;
+    max-width: 420px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .winner-card .comment {
+    font-weight: 700;
+    font-size: 1.13em;
+    color: #1b5e20;
+    margin-bottom: 0.3em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .winner-card .comment:before {
+    content: "\1F3C6";
+    font-size: 1.1em;
+    margin-right: 4px;
+  }
+  .winner-card .meta {
+    color: #2a4d8f;
+    font-size: 0.99em;
+    margin-bottom: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .winner-card .meta:before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+  }
+  .winner-card .meta:nth-child(2):before {
+    content: "\1F464";
+  }
+  .winner-card .meta:nth-child(3):before {
+    content: "\1F465";
+  }
+  .winner-card .meta:nth-child(4):before {
+    content: "\1F44D";
+  }
+  .error {
+    color: #d32f2f;
+    background: #ffeaea;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin: 16px 0 10px 0;
+    text-align: center;
+    font-size: 1.05em;
+    font-weight: 500;
+    box-shadow: 0 1px 8px #d32f2f11;
+  }
+  @media (max-width: 600px) {
+    .container {
+      max-width: 99vw;
+      margin: 10px 2px;
+      padding: 10px 2vw 18px 2vw;
+    }
+    h1 {
+      font-size: 1.08em;
+    }
+    .desc {
+      font-size: 0.98em;
+    }
+    form {
+      padding: 10px 2vw 8px 2vw;
+    }
+    .winner-card {
+      padding: 0.8em 0.7em;
+      font-size: 0.98em;
+    }
+    button[type="submit"] {
+      font-size: 1em;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>YouTube Random Comment Picker</h1>
+  <div class="desc">
+    Give a YouTube video link and number of winners. Only public comments are
+    eligible.
+  </div>
+  <form method="post" id="pickerForm" autocomplete="off">
+    <label for="video_url">Video Link or ID:</label>
+    <input
+      type="text"
+      id="video_url"
+      name="video_url"
+      value="{{ video_url }}"
+      required
+      placeholder="Video link/url or video ID"
+      title="Paste the full YouTube video link or just the 11-character video ID"
+    />
+    <label for="num_winners">Winner Count:</label>
+    <input
+      type="number"
+      id="num_winners"
+      name="num_winners"
+      min="1"
+      value="{{ num_winners }}"
+      required
+      title="How many winners to pick?"
+      placeholder="e.g. 1"
+    />
+    <button type="submit" id="submitBtn">Pick Winners</button>
+    <div id="loadingSpinner">
+      <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+        <circle
+          cx="20"
+          cy="20"
+          r="16"
+          stroke="#2a4d8f"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-dasharray="80"
+          stroke-dashoffset="60"
+        >
+          <animate
+            attributeName="stroke-dashoffset"
+            values="60;0"
+            dur="1s"
+            repeatCount="indefinite"
+          />
+        </circle>
+      </svg>
+    </div>
+  </form>
+  <script>
+    document
+      .getElementById("pickerForm")
+      .addEventListener("submit", function () {
+        document.getElementById("submitBtn").disabled = true;
+        document.getElementById("loadingSpinner").style.display = "";
+      });
+  </script>
+  {% if error %}
+  <div class="error">Error: {{ error }}</div>
+  {% endif %} {% if winners %}
+  <h2
+    style="
+      text-align: center;
+      color: #388e3c;
+      font-weight: 700;
+      margin-top: 18px;
+    "
+  >
+    Winner{{ 's' if winners|length > 1 else '' }}
+  </h2>
+  <div class="winner-section">
+    {% for w in winners %}
+    <div class="winner-card">
+      <div style="flex-shrink: 0">
+        {% if w.channel_image %}
+        <img
+          src="{{ w.channel_image }}"
+          alt="Channel Image"
+          style="
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #bfc7d1;
+            box-shadow: 0 1px 6px #2a4d8f22;
+            object-fit: cover;
+            background: #fff;
+          "
+          loading="lazy"
+        />
+        {% else %}
+        <div
+          style="
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #e3eafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a4d8f;
+            font-size: 1.7em;
+            border: 2px solid #bfc7d1;
+          "
+        >
+          👤
+        </div>
+        {% endif %}
+      </div>
+      <div style="flex: 1; min-width: 0">
+        <div class="comment">{{ w.text|safe }}</div>
+        <div class="meta">
+          Channel: {% if w.channel_id %}
+          <a
+            href="https://www.youtube.com/channel/{{ w.channel_id }}"
+            target="_blank"
+            rel="noopener"
+            style="
+              color: #2a4d8f;
+              font-weight: 600;
+              text-decoration: underline;
+              word-break: break-all;
+            "
+            >{{ w.channel_name }}</a
+          >
+          {% else %}
+          <span style="color: #2a4d8f; font-weight: 600"
+            >{{ w.channel_name }}</span
+          >
+          {% endif %}
+        </div>
+        <div class="meta">Subscribers: {{ w.subs }}</div>
+        <div class="meta">Likes: {{ w.like_count }}</div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+  <div style="text-align: center; margin-top: 18px">
+    <a
+      href="/home"
+      style="
+        color: #2a4d8f;
+        text-decoration: underline;
+        font-weight: 600;
+        font-size: 1.08em;
+      "
+    >
+      🏠 Go to Home Page
+    </a>
+  </div>
+</div>
+{% endblock %}

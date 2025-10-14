@@ -1,0 +1,403 @@
+{% extends "base.html" %} {% block title %}YouTube Comments Filter{% endblock %}
+{% block head %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<style>
+  body {
+    background: linear-gradient(120deg, #f7f8fa 0%, #e3eafc 100%);
+  }
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 4px 32px 0 #2a4d8f18;
+    padding: 36px 18px 28px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  h1 {
+    text-align: center;
+    color: #2a4d8f;
+    font-size: 1.45em;
+    letter-spacing: 0.5px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: stretch;
+    margin-bottom: 22px;
+    background: #f6f8fc;
+    border-radius: 12px;
+    padding: 18px 12px 12px 12px;
+    box-shadow: 0 1px 8px #2a4d8f11;
+  }
+  label {
+    font-weight: 600;
+    color: #2a4d8f;
+    margin-bottom: 2px;
+    font-size: 1em;
+  }
+  input[type="text"] {
+    padding: 12px 14px;
+    border: 2px solid #bfc7d1;
+    border-radius: 12px;
+    font-size: 1.08em;
+    background: #f9fafb;
+    transition: border 0.2s, box-shadow 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 4px;
+  }
+  input[type="text"]:focus {
+    border: 2px solid #2a4d8f;
+    box-shadow: 0 0 0 2px #2a4d8f22;
+    outline: none;
+  }
+  button[type="submit"] {
+    background: linear-gradient(90deg, #2a4d8f 60%, #4f8cff 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 13px 0;
+    font-size: 1.13em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: 0 2px 8px #2a4d8f22;
+    transition: background 0.2s, box-shadow 0.2s;
+    letter-spacing: 0.5px;
+  }
+  button[type="submit"]:hover {
+    background: linear-gradient(90deg, #18305c 60%, #2a4d8f 100%);
+    box-shadow: 0 4px 16px #2a4d8f33;
+  }
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    align-items: center;
+    justify-content: center;
+    margin: 18px 0 24px 0;
+    background: #f1f3f7;
+    border-radius: 12px;
+    padding: 10px 12px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.03);
+    min-height: 48px;
+  }
+  .filter-btn {
+    background: none;
+    border: none;
+    color: #2a4d8f;
+    font-size: 1rem;
+    padding: 6px 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+  }
+  .filter-btn.active,
+  .filter-btn:hover {
+    background: #2a4d8f;
+    color: #fff;
+  }
+  #subsInputWrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+    font-size: 1rem;
+    color: #2a4d8f;
+    background: #e3eafc;
+    border-radius: 6px;
+    padding: 4px 10px;
+    box-shadow: 0 1px 4px #2a4d8f11;
+    font-weight: 500;
+    transition: background 0.18s, box-shadow 0.18s;
+  }
+  #subsCountInput {
+    width: 54px;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1.5px solid #bfc7d1;
+    margin: 0 4px;
+    font-size: 1em;
+    background: #fff;
+    transition: border 0.18s, box-shadow 0.18s;
+  }
+  #subsCountInput:focus {
+    border: 1.5px solid #2a4d8f;
+    box-shadow: 0 0 0 2px #2a4d8f22;
+    outline: none;
+  }
+  .comment {
+    margin-bottom: 1em;
+    padding: 1.1em 1.3em 1em 1.3em;
+    border-radius: 14px;
+    background: #f6f8fc;
+    border: 1px solid #e3e7ef;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    transition: box-shadow 0.18s;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+  }
+  .comment:hover {
+    box-shadow: 0 2px 12px rgba(42, 77, 143, 0.08);
+  }
+  .subs {
+    color: #2a4d8f;
+    font-size: 0.99em;
+    font-weight: 500;
+    margin-bottom: 0.2em;
+    display: block;
+  }
+  .error {
+    color: #d32f2f;
+    background: #ffeaea;
+    border-radius: 8px;
+    padding: 10px 16px;
+    margin: 16px 0 10px 0;
+    text-align: center;
+    font-size: 1.05em;
+    font-weight: 500;
+    box-shadow: 0 1px 8px #d32f2f11;
+  }
+  @media (max-width: 600px) {
+    .container {
+      max-width: 99vw;
+      margin: 10px 2px;
+      padding: 10px 2vw 18px 2vw;
+    }
+    h1 {
+      font-size: 1.08em;
+    }
+    .desc {
+      font-size: 0.98em;
+    }
+    form {
+      padding: 10px 2vw 8px 2vw;
+    }
+    .filter-bar {
+      flex-direction: column;
+      gap: 8px 0;
+      padding: 8px 2vw;
+    }
+    #subsInputWrap {
+      width: 100%;
+      justify-content: center;
+      margin-left: 0;
+      margin-top: 4px;
+      padding: 6px 2vw;
+    }
+    .comment {
+      padding: 0.8em 0.7em;
+      font-size: 0.98em;
+    }
+    button[type="submit"] {
+      font-size: 1em;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>Community Docket - Smart QnA</h1>
+  <form method="post" id="mainForm">
+    <label>
+      YouTube Video Link or ID:<br />
+      <input type="text" name="video_url" required />
+    </label>
+    <button type="submit">Fetch Comments</button>
+  </form>
+  <div class="filter-bar">
+    <button
+      type="button"
+      class="filter-btn active"
+      id="btn-suggested"
+      onclick="showSection('suggested')"
+    >
+      Suggested
+    </button>
+    <button
+      type="button"
+      class="filter-btn"
+      id="btn-subs"
+      onclick="showSection('subs')"
+    >
+      Subscriber Count
+    </button>
+    <button
+      type="button"
+      class="filter-btn"
+      id="btn-likes"
+      onclick="showSection('likes')"
+    >
+      All Comments
+    </button>
+    <button
+      type="button"
+      class="filter-btn"
+      id="btn-date"
+      onclick="showSection('date')"
+    >
+      Newest
+    </button>
+    <span id="subsInputWrap" style="display: none"
+      >Top <input type="number" id="subsCountInput" min="1" value="5" /> by
+      Subscriber Count</span
+    >
+  </div>
+  {% if error %}
+  <div class="error">Error: {{ error }}</div>
+  {% endif %}
+  <script>
+    function showSection(section) {
+      document.getElementById("suggestedSection").style.display =
+        section === "suggested" ? "" : "none";
+      document.getElementById("subsSection").style.display =
+        section === "subs" ? "" : "none";
+      document.getElementById("likesSection").style.display =
+        section === "likes" ? "" : "none";
+      document.getElementById("dateSection").style.display =
+        section === "date" ? "" : "none";
+      document.getElementById("subsInputWrap").style.display =
+        section === "subs" ? "" : "none";
+      // Highlight active button
+      ["suggested", "subs", "likes", "date"].forEach(function (s) {
+        document.getElementById("btn-" + s).classList.remove("active");
+      });
+      document.getElementById("btn-" + section).classList.add("active");
+    }
+    // Show suggested by default
+    window.onload = function () {
+      showSection("suggested");
+    };
+    // Top N by subscriber count (client-side filter)
+    document.addEventListener("DOMContentLoaded", function () {
+      var input = document.getElementById("subsCountInput");
+      var subsSection = document.getElementById("subsSection");
+      if (!input || !subsSection) return;
+      var comments = subsSection.querySelectorAll(".comment");
+      function updateVisible() {
+        var n = parseInt(input.value) || 1;
+        comments.forEach(function (c, i) {
+          c.style.display = i < n ? "" : "none";
+        });
+      }
+      input.addEventListener("input", updateVisible);
+      updateVisible();
+    });
+  </script>
+  <div id="suggestedSection" style="margin-top: 18px">
+    <h2>Suggested Questions</h2>
+    <div style="margin-bottom: 12px; color: #444; font-size: 1.04em">
+      This section shows the most frequently asked or similar questions, grouped
+      and sorted by frequency, subscriber count, and likes. Only question-type
+      comments are included.
+    </div>
+    {% for c in suggested_comments %}
+    <div
+      class="comment"
+      style="
+        background: #fffbe7;
+        border: 2px solid #ffe082;
+        box-shadow: 0 2px 8px #ffe08233;
+        margin-bottom: 1.5em;
+      "
+    >
+      <div
+        style="
+          font-weight: bold;
+          font-size: 1.13em;
+          margin-bottom: 0.4em;
+          color: #2a4d8f;
+        "
+      >
+        {{ c.text|safe }}
+      </div>
+      <div style="margin-bottom: 0.2em">
+        <span style="color: #2a4d8f; font-weight: 500">চ্যানেল:</span> {{
+        c.channel_name }}
+      </div>
+      <div style="margin-bottom: 0.2em">
+        <span style="color: #2a4d8f; font-weight: 500">সাবস্ক্রাইবার:</span> {{
+        c.subs }}
+      </div>
+      <div style="margin-bottom: 0.2em">
+        <span style="color: #2a4d8f; font-weight: 500">লাইক:</span> {{
+        c.like_count }}
+      </div>
+      <div>
+        <span style="color: #d32f2f; font-weight: 500">
+          {% if c.freq == 1 %} Asked once {% else %} Asked {{ c.freq }} times {%
+          endif %}
+        </span>
+      </div>
+    </div>
+    {% else %}
+    <p>No suggested questions to display.</p>
+    {% endfor %}
+  </div>
+  <div id="subsSection" style="display: none; margin-top: 18px">
+    <h2>All Comments (Max to Min by Subscriber Count)</h2>
+    <div style="margin-bottom: 12px; color: #444; font-size: 1.04em">
+      This section displays all comments, sorted from highest to lowest by the
+      comment author's subscriber count. No comments are omitted.
+    </div>
+    <div id="subsCommentsList">
+      {% for c in top_subs_comments %}
+      <div class="comment">
+        <span class="subs"
+          >[{{ c.subs }} subs] | {{ c.channel_name }} | 👍 {{ c.like_count
+          }}</span
+        >
+        {{ c.text|safe }}
+      </div>
+      {% else %}
+      <p>No subscriber comments to display.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div id="likesSection" style="display: none; margin-top: 18px">
+    <h2>All Comments (Max to Min by Like Count)</h2>
+    <div style="margin-bottom: 12px; color: #444; font-size: 1.04em">
+      This section displays all comments, sorted from highest to lowest by like
+      count. If multiple comments have the same like count, the newest appears
+      first.
+    </div>
+    {% for c in all_comments_by_likes %}
+    <div class="comment">
+      <span class="subs"
+        >[{{ c.subs }} subs] | {{ c.channel_name }} | 👍 {{ c.like_count }} | {{
+        c.published_at }}</span
+      >
+      {{ c.text|safe }}
+    </div>
+    {% else %}
+    <p>No comments to display.</p>
+    {% endfor %}
+  </div>
+  <div id="dateSection" style="display: none; margin-top: 18px">
+    <h2>All Comments (Newest First)</h2>
+    <div style="margin-bottom: 12px; color: #444; font-size: 1.04em">
+      This section displays all comments, sorted by date with the newest
+      comments at the top.
+    </div>
+    {% for c in all_comments_by_date %}
+    <div class="comment">
+      <span class="subs"
+        >[{{ c.subs }} subs] | {{ c.channel_name }} | 👍 {{ c.like_count }} | {{
+        c.published_at }}</span
+      >
+      {{ c.text|safe }}
+    </div>
+    {% else %}
+    <p>No comments to display.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,25 @@
+<!-- Reusable YouTube-style card -->
+<div class="yt-card" role="article" aria-label="Featured comment card">
+  <div class="yt-card-inner">
+    <img
+      src="{{ avatar_url or url_for('static', filename='img/default_avatar.svg') }}"
+      alt="avatar"
+      class="yt-avatar"
+    />
+    <div class="yt-content">
+      <div class="yt-title">
+        <span class="yt-trophy">🏆</span>
+        {{ title or 'can we deploy more than 1 app using NGINX and GUNICORN and
+        access it without speacifying the ports' }}
+      </div>
+      <div class="yt-meta">
+        <span class="label">Channel:</span>
+        <a href="#">{{ channel or 'Rohit Wable' }}</a>
+        <span class="label">Subscribers:</span>
+        <span>{{ subs or '19' }}</span>
+        <span class="label">Likes:</span>
+        <span>{{ likes or '0' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

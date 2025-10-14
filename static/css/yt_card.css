@@ -1,0 +1,73 @@
+/* YouTube-style card for comments / posts */
+.yt-card {
+  background: #eaffea; /* light green */
+  border: 2px solid #bff3bf;
+  border-radius: 14px;
+  padding: 14px;
+  max-width: 640px;
+  margin: 18px auto;
+  box-shadow: 0 6px 18px rgba(34, 34, 34, 0.05);
+}
+.yt-card-inner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.yt-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+.yt-content {
+  flex: 1;
+}
+.yt-title {
+  font-weight: 600;
+  color: #114b2b;
+  font-size: 1.05rem;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+.yt-trophy {
+  display: inline-block;
+  margin-right: 8px;
+  background: linear-gradient(180deg, #ffd966, #ffaf00);
+  color: #fff;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  text-align: center;
+  line-height: 34px;
+  font-size: 18px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+.yt-meta {
+  font-size: 0.92rem;
+  color: #476a50;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.yt-meta a {
+  color: #0b5136;
+  text-decoration: none;
+  font-weight: 600;
+}
+.yt-meta .label {
+  opacity: 0.88;
+  font-weight: 500;
+}
+
+@media (max-width: 560px) {
+  .yt-card {
+    padding: 12px;
+    margin: 12px 8px;
+  }
+  .yt-avatar {
+    width: 48px;
+    height: 48px;
+  }
+}

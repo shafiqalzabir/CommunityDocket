@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>YouTube Comments Fetcher (Responsive)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f8fa;
+        color: #222;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 520px;
+        margin: 40px auto;
+        background: #fff;
+        border-radius: 14px;
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+        padding: 32px 20px 24px 20px;
+      }
+      h1 {
+        text-align: center;
+        color: #2a4d8f;
+        margin-bottom: 18px;
+        font-size: 1.5em;
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+      label {
+        font-weight: 500;
+        color: #2a4d8f;
+      }
+      input[type="text"],
+      input[type="number"] {
+        padding: 10px 12px;
+        border: 1.5px solid #bfc7d1;
+        border-radius: 6px;
+        font-size: 1em;
+        background: #f9fafb;
+        transition: border 0.2s;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        border: 1.5px solid #2a4d8f;
+        outline: none;
+      }
+      button[type="submit"] {
+        background: #2a4d8f;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 0;
+        font-size: 1.08em;
+        cursor: pointer;
+        margin-top: 8px;
+        transition: background 0.2s;
+      }
+      button[type="submit"]:hover {
+        background: #18305c;
+      }
+      .comment {
+        background: #f6f8fc;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px #2a4d8f11;
+        margin-bottom: 1.1em;
+        padding: 1em 1.2em;
+        word-break: break-word;
+      }
+      .subs {
+        color: #2a4d8f;
+        font-size: 0.98em;
+        font-weight: 500;
+        margin-right: 8px;
+      }
+      .error {
+        color: #d32f2f;
+        background: #ffeaea;
+        border-radius: 6px;
+        padding: 8px 14px;
+        margin: 12px 0;
+        text-align: center;
+      }
+      @media (max-width: 600px) {
+        .container {
+          max-width: 98vw;
+          margin: 10px 2px;
+          padding: 12px 2vw 18px 2vw;
+        }
+        h1 {
+          font-size: 1.1em;
+        }
+        input[type="text"],
+        input[type="number"] {
+          font-size: 0.98em;
+        }
+        button[type="submit"] {
+          font-size: 1em;
+        }
+      }
+    </style>
+    <!-- card styles -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/yt_card.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>YouTube Comments Fetcher</h1>
+      <form id="fetchForm">
+        <label for="video_url">YouTube Video Link or ID</label>
+        <input
+          type="text"
+          id="video_url"
+          name="video_url"
+          placeholder="Paste YouTube link or ID"
+          required
+        />
+        <label for="min_subs">Minimum Subscriber Count (optional)</label>
+        <input
+          type="number"
+          id="min_subs"
+          name="min_subs"
+          min="0"
+          placeholder="0"
+        />
+        <button type="submit">Fetch Comments</button>
+      </form>
+      <div id="output"></div>
+      <!-- Demo card matching the provided attachment -->
+      {% include '_yt_card.html' %}
+    </div>
+    <script>
+      document.getElementById("fetchForm").onsubmit = async function (e) {
+        e.preventDefault();
+        const video_url = document.getElementById("video_url").value.trim();
+        const min_subs = document.getElementById("min_subs").value.trim();
+        const output = document.getElementById("output");
+        output.innerHTML =
+          '<div style="text-align:center;color:#2a4d8f;">Fetching comments...</div>';
+        try {
+          const response = await fetch("/api/youtube_comments", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ video_url, min_subs }),
+          });
+          const data = await response.json();
+          if (data.error) {
+            output.innerHTML = '<div class="error">' + data.error + "</div>";
+          } else if (data.comments && data.comments.length) {
+            output.innerHTML = data.comments
+              .map(
+                (c) =>
+                  `<div class="comment"><span class="subs">[${c.subs} subs]</span> ${c.text}</div>`
+              )
+              .join("");
+          } else {
+            output.innerHTML =
+              '<div style="text-align:center;">No comments found.</div>';
+          }
+        } catch (err) {
+          output.innerHTML =
+            '<div class="error">Failed to fetch comments.</div>';
+        }
+      };
+    </script>
+  </body>
+</html>

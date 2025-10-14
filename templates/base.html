@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{% block title %}Community Docket{% endblock %}</title>
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="YouTube Random Comment Picker, Comment Filter, and QnA tools. Instantly pick winners, analyze comments, and more. Free, fast, and secure!"
+    />
+    <meta
+      name="keywords"
+      content="YouTube, Comment Picker, Random Comment Picker, YouTube Giveaway, YouTube Comments, QnA, Filter, Winner Picker, YouTube Tools, Smart QnA App"
+    />
+    <meta name="author" content="Smart QnA App Team" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      property="og:title"
+      content="Smart QnA App - YouTube Random Comment Picker & Tools"
+    />
+    <meta
+      property="og:description"
+      content="Pick random winners from YouTube comments, filter spam, and analyze engagement. The best free YouTube comment picker and QnA toolkit."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yourdomain.com/" />
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/static/og-image.png"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Smart QnA App - YouTube Random Comment Picker & Tools"
+    />
+    <meta
+      name="twitter:description"
+      content="Pick random winners from YouTube comments, filter spam, and analyze engagement. The best free YouTube comment picker and QnA toolkit."
+    />
+    <meta
+      name="twitter:image"
+      content="https://yourdomain.com/static/og-image.png"
+    />
+    <!-- Structured Data for Google -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Smart QnA App",
+        "url": "https://yourdomain.com/",
+        "description": "YouTube Random Comment Picker, Comment Filter, and QnA tools. Instantly pick winners, analyze comments, and more.",
+        "applicationCategory": "WebApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.9",
+          "reviewCount": "1200"
+        }
+      }
+    </script>
+    <style>
+      body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f7f8fa;
+        color: #222;
+        margin: 0;
+      }
+      .navbar {
+        background: #2a4d8f;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 24px;
+        height: 56px;
+        box-shadow: 0 2px 8px #2a4d8f22;
+      }
+      .navbar .brand {
+        font-size: 1.25em;
+        font-weight: bold;
+        letter-spacing: 1px;
+        color: #fff;
+        text-decoration: none;
+      }
+      .navbar-links {
+        display: flex;
+        gap: 18px;
+      }
+      .navbar-link {
+        color: #fff;
+        text-decoration: none;
+        font-size: 1em;
+        padding: 6px 12px;
+        border-radius: 5px;
+        transition: background 0.18s, color 0.18s;
+      }
+      .navbar-link:hover,
+      .navbar-link.active {
+        background: #fff;
+        color: #2a4d8f;
+      }
+      @media (max-width: 600px) {
+        .navbar {
+          flex-direction: column;
+          height: auto;
+          padding: 8px 4px;
+        }
+        .navbar-links {
+          flex-direction: column;
+          gap: 8px;
+        }
+      }
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <nav class="navbar">
+      <a href="/home" class="brand">Community Docket</a>
+      <div class="navbar-links">
+        <a
+          href="/home"
+          class="navbar-link{% if request.path == '/home' %} active{% endif %}"
+          >Home</a
+        >
+        <a
+          href="/"
+          class="navbar-link{% if request.path == '/' %} active{% endif %}"
+          >Comment Filter</a
+        >
+        <a
+          href="/random-comment-picker"
+          class="navbar-link{% if request.path == '/random-comment-picker' %} active{% endif %}"
+          >Random Picker</a
+        >
+        <a
+          href="/about"
+          class="navbar-link{% if request.path == '/about' %} active{% endif %}"
+          >About</a
+        >
+      </div>
+    </nav>
+    {% block content %}{% endblock %}
+  </body>
+</html>

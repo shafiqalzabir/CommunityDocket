@@ -1,0 +1,102 @@
+{% extends "base.html" %} {% block title %}About - Smart QnA App{% endblock %}
+{% block head %}
+<style>
+  .container {
+    max-width: 800px;
+    margin: 40px auto;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    padding: 36px 28px 28px 28px;
+  }
+  h1 {
+    text-align: center;
+    color: #2a4d8f;
+    margin-bottom: 10px;
+  }
+  .contributors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    margin: 36px 0 24px 0;
+  }
+  .contrib-card {
+    background: #f6f8fc;
+    border-radius: 10px;
+    box-shadow: 0 1px 8px #2a4d8f11;
+    width: 220px;
+    padding: 22px 18px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1.5px solid #e3e7ef;
+  }
+  .contrib-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    margin-bottom: 14px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #e3e7ef;
+  }
+  .contrib-name {
+    font-size: 1.08em;
+    font-weight: bold;
+    color: #2a4d8f;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .contrib-role {
+    font-size: 0.98em;
+    color: #444;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  @media (max-width: 800px) {
+    .contributors {
+      flex-direction: column;
+      align-items: center;
+    }
+    .contrib-card {
+      width: 98vw;
+    }
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="container">
+  <h1>About This Project</h1>
+  <div
+    style="
+      text-align: center;
+      color: #444;
+      font-size: 1.08em;
+      margin-bottom: 18px;
+    "
+  >
+    This app was made possible by the contributions of the following people:
+  </div>
+  <div class="contributors">
+    <div class="contrib-card">
+      <img
+        src="https://i.postimg.cc/J4hvDnhc/Shafiq-Al-Zabir.png"
+        alt="Contributor Photo"
+        class="contrib-img"
+      />
+      <div class="contrib-name">Shafiq Al Zabir</div>
+      <div class="contrib-role">Role / Contribution</div>
+    </div>
+    <div class="contrib-card">
+      <img
+        src="https://img.icons8.com/color/96/000000/user-female-circle--v2.png"
+        alt="Contributor Photo"
+        class="contrib-img"
+      />
+      <div class="contrib-name">Contributor Name</div>
+      <div class="contrib-role">Role / Contribution</div>
+    </div>
+    <!-- Add more contributor cards as needed -->
+  </div>
+</div>
+{% endblock %}
