@@ -7,9 +7,10 @@ import time
 import json
 import re
 import os
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, make_response
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
+from datetime import datetime
 
 load_dotenv()
 API_KEY = os.getenv("YOUTUBE_API_KEY")
@@ -51,10 +52,7 @@ def api_youtube_comments():
 @app.route('/about')
 def about():
     return render_template('about.html')
-    
-@app.route('/sitemap.xml')
-def sitemap():
-    return render_template('sitemap.xml')
+
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
@@ -65,6 +63,35 @@ def home():
         elif feature == 'picker':
             return redirect(url_for('random_comment_picker'))
     return render_template('home.html')
+
+@app.route('/sitemap.xml', methods=['GET'])
+def sitemap():
+    """Generate sitemap.xml."""
+    try:
+        pages = []
+        now = datetime.now()
+        lastmod = now.strftime('%Y-%m-%d')
+        
+        # ... your logic to populate the 'pages' list ...
+        for rule in app.url_map.iter_rules():
+            if "GET" in rule.methods and len(rule.arguments) == 0:
+                pages.append([
+                    url_for(rule.endpoint, _external=True),
+                    lastmod,
+                    'daily'
+                ])
+
+        sitemap_xml = render_template('sitemap.xml', pages=pages)
+        
+        # This line now works because make_response is imported
+        response = make_response(sitemap_xml)
+        
+        response.headers['Content-Type'] = 'application/xml'
+        
+        return response
+
+    except Exception as e:
+        return str(e)
 
 
 def get_video_owner_channel_id(video_id):
@@ -299,8 +326,7 @@ def index():
 
 
 if __name__ == "__main__":
-    # রেন্ডার থেকে 'PORT' এনভায়রনমেন্ট ভেরিয়েবল নাও, না পেলে ডিফল্ট হিসেবে 5000 ব্যবহার করো
+    # Get the 'PORT' environment variable from render, if not found use 5000 as default
     port = int(os.environ.get("PORT", 5000))
-    # হোস্ট 0.0.0.0 সেট করো, যাতে এটি বাইরের কানেকশন গ্রহণ করতে পারে
+    # Set the host to 0.0.0.0 so that it can accept external connections.
     app.run(host='0.0.0.0', port=port, debug=True)
-
