@@ -51,7 +51,10 @@ def api_youtube_comments():
 @app.route('/about')
 def about():
     return render_template('about.html')
-
+    
+@app.route('/sitemap.xml')
+def sitemap():
+    return render_template('sitemap.xml')
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
@@ -300,3 +303,4 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     # হোস্ট 0.0.0.0 সেট করো, যাতে এটি বাইরের কানেকশন গ্রহণ করতে পারে
     app.run(host='0.0.0.0', port=port, debug=True)
+
